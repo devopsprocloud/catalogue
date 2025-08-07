@@ -42,6 +42,13 @@ pipeline {
                 """
             }
         }
+        stage('List the contents') {
+            steps {
+                sh """
+                    ls -la 
+                """
+            }
+        }
 
         // stage('Check Parameters') {
         //     steps {

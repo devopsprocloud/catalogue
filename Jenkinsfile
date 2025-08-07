@@ -35,9 +35,11 @@ pipeline {
                 }
             }
         }
-        stage('Hi') {
+        stage('Installing Dependecies') {
             steps {
-                echo 'Hi Trixie...'
+                sh """
+                    npm install 
+                """
             }
         }
 

@@ -46,27 +46,12 @@ pipeline {
                 echo 'Hello Prem..'
             }
         }
-        stage('Hi') {
-            steps {
-                echo 'Hi Trixie...'
-            }
-        }
-        stage('Hey') {
-            steps {
-                echo 'Hey from AGENT-1....'
-            }
-        }
         stage('Init') {
             steps {
                 echo 'Initiating'
             }
         }
-        stage('Deploy') {
-            steps {
-                    echo "Here I wrote shellscript"
-                    echo "$GREETING"
-            }
-        }
+
         // stage('Check Parameters') {
         //     steps {
         //         echo "Hello ${params.PERSON}"

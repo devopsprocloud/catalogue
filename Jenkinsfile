@@ -29,26 +29,15 @@ pipeline {
         stage('get the version') {
             steps {
                 script {
-                    def packageJson = readJSON file: 'package.js'
+                    def packageJson = readJSON file: 'package.json'
                     packageVersion = packageJson.version
-                    echo "application version is $packageVersion"
+                    echo "application version: $packageVersion"
                 }
             }
         }
         stage('Hi') {
             steps {
                 echo 'Hi Trixie...'
-            }
-        }
-
-        stage('Clone the code') {
-            steps {
-                echo 'Hello Prem..'
-            }
-        }
-        stage('Init') {
-            steps {
-                echo 'Initiating'
             }
         }
 

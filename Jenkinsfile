@@ -13,6 +13,9 @@ pipeline {
         ansiColor('xterm')
         disableConcurrentBuilds()
     }
+    parameters {
+        booleanParam(name: 'deploy', defaultValue: 'false', description: 'Enable to deploy catalogue')
+    }
     stages {
         stage('Get the package version') {
             steps {
@@ -37,6 +40,18 @@ pipeline {
             steps {
                 sh """
                     npm install
+                """
+            }
+        }
+        stage('Running Unit tests') {
+            steps {
+                echo 'Unit tests will run here'
+            }
+        }
+        stage('SonarQube Scanning') {
+            steps {
+                sh """
+                    sonar-scanner
                 """
             }
         }
@@ -68,11 +83,14 @@ pipeline {
         }
         stage('Build Job: catalogue-deploy') {
             steps {
-                build job: 'catalogue-deploy', wait: true,
-                parameters: [
-                    string(name: 'version', value: "${packageVersion}"),
-                    string(name: 'environment', value: 'dev')
-                ]
+                when {
+                    expression {params.deploy == true}
+                }
+                    build job: 'catalogue-deploy', wait: true,
+                    parameters: [
+                        string(name: 'version', value: "${packageVersion}"),
+                        string(name: 'environment', value: 'dev')
+                    ]
             }
         }
     }

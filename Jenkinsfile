@@ -68,10 +68,10 @@ pipeline {
         }
         stage('Build Job: catalogue-deploy') {
             steps {
-                build job: 'catalogue-deploy', wait = true,
-                parameters : [
-                    string(name: 'version', defaultValue: "${packageVersion}"),
-                    string(name: 'environment', defaultValue: 'dev')
+                build job: 'catalogue-deploy', wait: true,
+                parameters: [
+                    string(name: 'version', value: "${packageVersion}"),
+                    string(name: 'environment', value: 'dev')
                 ]
             }
         }

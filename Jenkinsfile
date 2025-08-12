@@ -52,7 +52,7 @@ pipeline {
         stage('Zipping the contents') {
             steps {
                 sh """
-                    zip -r catalogue.zip ./* -x "*.zip" -x ".git"
+                    zip -q -r catalogue.zip ./* -x "*.zip" -x ".git"
                 """
             }
         }

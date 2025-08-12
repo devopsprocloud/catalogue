@@ -6,24 +6,13 @@ pipeline {
     }
     environment {
         packageVersion = ''
+        nexusUrl = '98.83.155.227:8081'
     }
 
     options {
         timeout(time: 1, unit: 'HOURS')
         disableConcurrentBuilds()
     }
-
-    // parameters {
-    //     string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-
-    //     text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
-
-    //     booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
-
-    //     choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
-
-    //     password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
-    // }
 
     stages {
         stage('Get the version') {
@@ -45,7 +34,7 @@ pipeline {
         stage('List the contents') {
             steps {
                 sh """
-                    ls -la 
+                    sudo yum install zip -y
                 """
             }
         }
@@ -56,22 +45,26 @@ pipeline {
                 """
             }
         }
-
-        // stage('Check Parameters') {
-        //     steps {
-        //         echo "Hello ${params.PERSON}"
-
-        //         echo "Biography: ${params.BIOGRAPHY}"
-
-        //         echo "Toggle: ${params.TOGGLE}"
-
-        //         echo "Choice: ${params.CHOICE}"
-
-        //         echo "Password: ${params.PASSWORD}"
-        //     }
-        // }
+        stage('Uploading Artifacts') {
+            steps {
+            nexusArtifactUploader(
+                nexusVersion: 'nexus3',
+                protocol: 'http',
+                nexusUrl: "${nexusURL}",
+                groupId: 'com.catalogue',
+                version: "${packageVersion}",
+                repository: 'catalogue',
+                credentialsId: 'nexus-auth',
+                artifacts: [
+                    [artifactId: catalogue,
+                    classifier: '',
+                    file: 'catalogue.zip',
+                    type: 'zip']
+                ]
+            )
+        }    
     }
-    //POST Stages
+    }
     post { 
         always { 
             echo 'Deleting the directory'

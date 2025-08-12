@@ -46,5 +46,12 @@ pipeline {
                 """
             }
         }
+        stage('List the contents') {
+            steps {
+                sh """
+                    ls -ltr
+                """
+            }
+        }
     }
 }

@@ -73,9 +73,10 @@ pipeline {
     }
     //POST Stages
     post { 
-        // always { 
-        //     echo 'Pipeline is executed'
-        // }
+        always { 
+            echo 'Deleting the directory'
+            deleteDir()
+        }
         failure {
             echo 'The pipeline is Failed, Please send some alerts'
         }

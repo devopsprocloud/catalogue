@@ -66,18 +66,11 @@ pipeline {
        }
         stage('Build Job') {
             steps {
-                // script {
-                //     build job: "catalogue-deploy", wait: true,
-                //     parameters: [
-                //         string(name: 'version', value: "${packageVersion}"),
-                //         string(name: 'environment', value: 'prod')
-                //     ]
-                // }
                 build job: "catalogue-deploy", wait: true,
-                    parameters: [
-                        string(name: 'version', value: "${packageVersion}"),
-                        string(name: 'environment', value: 'staging')
-                    ]
+                parameters: [
+                    string(name: 'version', value: "${packageVersion}"),
+                    string(name: 'environment', value: 'UAT')
+                ]
             }
         } 
     }

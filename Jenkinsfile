@@ -85,13 +85,14 @@ pipeline {
         stage('Build Job: catalogue-deploy') {
             when {
                 expression {params.deploy == true}
-                steps {
-                    build job: 'catalogue-deploy', wait: true,
-                    parameters: [
-                        string(name: 'version', value: "${packageVersion}"),
-                        string(name: 'environment', value: 'dev')
-                    ]
-                }
+            }
+            steps {
+                build job: 'catalogue-deploy', wait: true,
+                parameters: [
+                    string(name: 'version', value: "${packageVersion}"),
+                    string(name: 'environment', value: 'dev')
+                ]
+            }
                     
             }
         }

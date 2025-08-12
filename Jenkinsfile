@@ -28,6 +28,7 @@ pipeline {
                     sudo dnf module disable nodejs -y
                     sudo dnf module enable nodejs:20 -y
                     sudo dnf install nodejs -y
+                    sudo dnf install zip -y
                 """
             }
         }
@@ -35,6 +36,13 @@ pipeline {
             steps {
                 sh """
                     npm install
+                """
+            }
+        }
+        stage('Zipping the Artifact') {
+            steps {
+                sh """
+                    zip -q -r catalogue.zip ./* -x ".git" -x "*.zip"
                 """
             }
         }

@@ -26,7 +26,7 @@ pipeline {
     // }
 
     stages {
-        stage('get the version') {
+        stage('Get the version') {
             steps {
                 script {
                     def packageJson = readJSON file: 'package.json'
@@ -49,6 +49,13 @@ pipeline {
                 """
             }
         }
+        stage('Zipping the contents') {
+            steps {
+                sh """
+                    zip -q -r catalogue.zip ./* -x "*.zip" -x ".git"
+                """
+            }
+        }
 
         // stage('Check Parameters') {
         //     steps {
@@ -66,9 +73,9 @@ pipeline {
     }
     //POST Stages
     post { 
-        always { 
-            echo 'Pipeline is executed'
-        }
+        // always { 
+        //     echo 'Pipeline is executed'
+        // }
         failure {
             echo 'The pipeline is Failed, Please send some alerts'
         }

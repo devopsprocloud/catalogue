@@ -51,8 +51,8 @@ pipeline {
         stage('SonarQube Scanning') {
             steps {
                 sh """
-                    sonar-scanner
-                    -Dsonar.projectKey=catalogue
+                    sonar-scanner \
+                    -Dsonar.projectKey=catalogue \
                 """
             }
         }

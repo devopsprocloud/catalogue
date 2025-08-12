@@ -67,4 +67,16 @@ pipeline {
             }
         }
     }
+    post { 
+        always { 
+            echo 'Deleting the directory'
+            deleteDir()
+        }
+        failure {
+            echo 'The pipeline is Failed, Please send some alerts'
+        }
+        success {
+            echo 'Pipeline executed successfully'
+        }
+    }
 }

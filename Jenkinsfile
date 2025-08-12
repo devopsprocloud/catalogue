@@ -7,6 +7,7 @@ pipeline {
     environment {
         packageVersion = ''
         environment = ''
+        nexusURL = '172.31.34.136:8081'
     }
     options {
         ansiColor('xterm')
@@ -46,11 +47,23 @@ pipeline {
                 """
             }
         }
-        stage('List the contents') {
+        stage('Uploading the Artifact') {
             steps {
-                sh """
-                    ls -ltr
-                """
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: "${nexusURL}",
+                    groupId: 'com.roboshop',
+                    version: "${packageVersion}",
+                    repository: 'catalogue',
+                    credentialsId: 'nexus-auth',
+                    artifacts: [
+                        [artifactId: 'catalogue',
+                        classifier: '',
+                        file: 'catalogue.zip',
+                        type: 'zip']
+                    ]
+                )
             }
         }
     }

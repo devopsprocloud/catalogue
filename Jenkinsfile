@@ -4,17 +4,20 @@ pipeline {
             label 'AGENT-1'
         }
     }
-    // environment {
-
-    // }
+    environment {
+        packageVersion = ''
+        environment = ''
+    }
     options {
         ansiColor('xterm')
         disableConcurrentBuilds()
     }
     stages {
-        stage('Initial Step') {
+        stage('Get the package version') {
             steps {
-                echo "This is the first step"
+                def app_version = readJSON = 'package.json'
+                packageVersion = app_version.version
+                echo "Package Version: $packageVersion"
             }
         }
     }

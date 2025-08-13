@@ -7,7 +7,7 @@ def configMap = [
     component: 'catalogue'
 ]
 
-Print ENV
+sh 'printenv'
 // if(){
 
 // }

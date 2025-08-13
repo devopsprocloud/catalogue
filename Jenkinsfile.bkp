@@ -6,46 +6,63 @@ pipeline {
     }
     environment {
         packageVersion = ''
-        nexusUrl = '98.83.155.227:8081'
+        environment = ''
+        nexusURL = '172.31.36.142:8081'
     }
-
     options {
-        timeout(time: 1, unit: 'HOURS')
+        ansiColor('xterm')
         disableConcurrentBuilds()
     }
-
+    parameters {
+        booleanParam(name: 'deploy', defaultValue: 'false', description: 'Enable to deploy catalogue')
+    }
     stages {
-        stage('Get the version') {
+        stage('Get the package version') {
             steps {
                 script {
-                    def packageJson = readJSON file: 'package.json'
-                    packageVersion = packageJson.version
-                    echo "application version: $packageVersion"
+                def packageJSON = readJSON file: 'package.json'
+                packageVersion = packageJSON.version
+                echo "Application Version: $packageVersion"
                 }
             }
         }
-        stage('Installing Dependecies') {
-            steps {
+        stage('Installing NodeJS') {
+            steps{
                 sh """
-                    npm install 
+                    sudo dnf module disable nodejs -y
+                    sudo dnf module enable nodejs:20 -y
+                    sudo dnf install nodejs -y
+                    sudo dnf install zip -y
                 """
             }
         }
-        stage('List the contents') {
+        stage('Installing Dependencies') {
             steps {
                 sh """
-                    sudo yum install zip -y
+                    npm install
                 """
             }
         }
-        stage('Zipping the contents') {
+        stage('Running Unit tests') {
+            steps {
+                echo 'Unit tests will run here'
+            }
+        }
+        stage('SonarQube Scanning') {
             steps {
                 sh """
-                    zip -q -r catalogue.zip ./* -x "*.zip" -x ".git"
+                    sonar-scanner
                 """
             }
         }
-        stage('Uploading Artifacts') {
+        stage('Zipping the Artifact') {
+            steps {
+                sh """
+                    zip -q -r catalogue.zip ./* -x ".git" -x "*.zip"
+                """
+            }
+        }
+        stage('Uploading the Artifact') {
             steps {
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
@@ -62,9 +79,12 @@ pipeline {
                         type: 'zip']
                     ]
                 )
-           }   
-       }
-        stage('Build Job') {
+            }
+        }
+        stage('Build Job: catalogue-deploy') {
+            when {
+                expression {params.deploy == true}
+            }
             steps {
                 build job: 'catalogue-deploy', wait: true,
                 parameters: [
@@ -72,8 +92,9 @@ pipeline {
                     string(name: 'environment', value: 'dev')
                 ]
             }
-        } 
-    }
+                    
+            }
+        }
     post { 
         always { 
             echo 'Deleting the directory'
